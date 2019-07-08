@@ -105,3 +105,4 @@ venv.bak/
 Secrets/config.py
 VirtualEnv/hack2019_venv/**
 .vscode/settings.json
+Module/Metadata/deleteme.py
