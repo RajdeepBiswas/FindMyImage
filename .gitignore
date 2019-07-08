@@ -102,3 +102,6 @@ venv.bak/
 
 # mypy
 .mypy_cache/
+Secrets/config.py
+VirtualEnv/hack2019_venv/**
+.vscode/settings.json
