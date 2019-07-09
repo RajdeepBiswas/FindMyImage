@@ -66,8 +66,11 @@ class ImageData():
     # Method: ImageData.get_image_metadata
     # Desc: This method return object metadata value
     # Param 1: Type: str Name: tag_name Desc: The metadata tag to fecth
+    #                          default value is 'All'
+    # Returns: The value of the metadata or a hash containing all metadata
+    #            in key and values
     # --------------------------------------------------------------------------
-    def get_image_metadata(self, tag_name):
+    def get_image_metadata(self, tag_name='All'):
         self.exif_data = {}
         self.tag_name = tag_name
         try:
@@ -84,8 +87,10 @@ class ImageData():
                         self.exif_data[decoded] = gps_data
                     else:
                         self.exif_data[decoded] = value
-
-            return self.exif_data[self.tag_name]
+            if tag_name == 'All':
+                return self.exif_data
+            else:
+                return self.exif_data[self.tag_name]
         except Exception as e:
             return e
             
@@ -109,7 +114,8 @@ class ImageData():
     # --------------------------------------------------------------------------
     # Method: ImageData.get_image_geo_data
     # Desc: This method return object metadata value
-    # Param 1: Type: str Name: tag_name Desc: The metadata tag to fecth
+    # Param 1: Type: str Name: tag_name Desc: Extracts Latitude,Longitude and
+    #                                                Coordinates
     # --------------------------------------------------------------------------
     def get_image_geo_data(self, tag_name):
         self.extracted_location_data = {}
