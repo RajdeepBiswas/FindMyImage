@@ -5,7 +5,7 @@ parent_dir = os.path.abspath(os.path.join(os.getcwd(),".."))
 sys.path.append(parent_dir)
 
 import Secrets.config as config
-
+from CustomModules.Metadata.image import ImageData
 from CustomModules.Vision.response import ResponseData
 ######################################################################################
 ######################################################################################
@@ -73,7 +73,7 @@ print (response.get_vision_reponse())
 print ("\n")
 image_caption = response.get_vision_reponse()["description"]["captions"][0]["text"].capitalize()
 print (image_caption)
-
+print ("\n")
 
 
 ######################################################################################
@@ -81,3 +81,21 @@ print (image_caption)
 ######################################################################################
 
 #This demonstartes response.get_vision_reponse() method for remote on blob
+
+
+image_object=ImageData(blob_object='test_images/20180616_161439.jpg')
+
+image_url = image_object.image_url
+
+response = ResponseData(image_url=image_url)
+
+#print (response.status)
+
+assert(response.status is None), "reponse has failed"
+
+print (response.get_vision_reponse())
+
+print ("\n")
+image_caption = response.get_vision_reponse()["description"]["captions"][0]["text"].capitalize()
+print (image_caption)
+print ("\n")
