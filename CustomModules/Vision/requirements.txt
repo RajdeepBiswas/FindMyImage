@@ -1,0 +1,4 @@
+#required library installations
+#example usage
+#pip install -r requirements.txt
+requests
