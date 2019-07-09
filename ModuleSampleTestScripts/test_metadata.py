@@ -6,7 +6,7 @@ sys.path.append(parent_dir)
 
 import Secrets.config as config
 
-from Module.Metadata.image import ImageData
+from CustomModules.Metadata.image import ImageData
 
 #Test1: With local image
 #This demonstartes ImageData.get_image_geo_data() method
