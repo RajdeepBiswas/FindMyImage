@@ -112,6 +112,31 @@ class ImageData():
         return v_degrees + (v_minutes / 60.0) + (v_seconds / 3600.0)
 
     # --------------------------------------------------------------------------
+    # Method: ImageData.resize_image
+    # Desc: Helper function to resize the image due to cog services restriction
+    # Param 1: Type: str Name: image , the image file
+    # Param 2: Type: int Name: basewidth , the width of the resized image
+    # --------------------------------------------------------------------------   
+    def resize_image(self,resize_percentage=None):
+
+        self.size_mb = round(os.stat(self.local_path).st_size/1024)
+        if (self.size_mb >= 5000 or resize_percentage is not None):
+            #its 5 MB but for safety we took 4.9 MB
+            self.resize_percentage = 4900 / self.size_mb \
+                if resize_percentage is None else \
+                    resize_percentage
+            self.width = self.image.size[0]
+            self.height = self.image.size[1]
+            self.resized_width = int(self.width * self.resize_percentage)
+            self.resized_height = int(self.height * self.resize_percentage)
+            self.resized_image = self.image.resize((self.resized_width,self.resized_height), Image.ANTIALIAS)
+            print("\n Image Resized!")
+            self.touched_image = self.resized_image
+        else:
+            self.touched_image=image
+        return self.touched_image    
+
+    # --------------------------------------------------------------------------
     # Method: ImageData.get_image_geo_data
     # Desc: This method return object metadata value
     # Param 1: Type: str Name: tag_name Desc: Extracts Latitude,Longitude and
