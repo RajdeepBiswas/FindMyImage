@@ -114,15 +114,20 @@ class ImageData():
     # --------------------------------------------------------------------------
     # Method: ImageData.resize_image
     # Desc: Helper function to resize the image due to cog services restriction
-    # Param 1: Type: str Name: image , the image file
-    # Param 2: Type: int Name: basewidth , the width of the resized image
+    # Param 1: Type: float Name: resize_percentage 
     # --------------------------------------------------------------------------   
-    def resize_image(self,resize_percentage=None):
+    def resize_image(self,resize_percentage=None,):
 
-        self.size_mb = round(os.stat(self.local_path).st_size/1024)
-        if (self.size_mb >= 5000 or resize_percentage is not None):
+        #Because JpegImageFile' object has no attribute 'st_size'
+        if (self.is_local == 'N' or self.is_local is None):
+            site = urllib.request.urlopen(self.image_url)
+            meta = site.info()
+            self.size_kb = float(meta.get("Content-Length"))/1024            
+        else:
+            self.size_kb = round(os.stat(self.local_path).st_size/1024)
+        if (self.size_kb >= 5000 or resize_percentage is not None):
             #its 5 MB but for safety we took 4.9 MB
-            self.resize_percentage = 4900 / self.size_mb \
+            self.resize_percentage = 4900 / self.size_kb \
                 if resize_percentage is None else \
                     resize_percentage
             self.width = self.image.size[0]
@@ -130,12 +135,20 @@ class ImageData():
             self.resized_width = int(self.width * self.resize_percentage)
             self.resized_height = int(self.height * self.resize_percentage)
             self.resized_image = self.image.resize((self.resized_width,self.resized_height), Image.ANTIALIAS)
-            print("\n Image Resized!")
-            self.touched_image = self.resized_image
+            self.orientation =  self.get_image_metadata('Orientation')
+            if self.orientation == 3:
+                self.touched_image = self.resized_image.rotate(180,expand=True)
+            elif self.orientation == 6:
+                self.touched_image = self.resized_image.rotate(270,expand=True)
+            elif self.orientation == 8:
+                self.touched_image = self.resized_image.rotate(90,expand=True)
+            else:
+                self.touched_image = self.resized_image
         else:
-            self.touched_image=image
+            self.touched_image=self.image
         return self.touched_image    
 
+    
     # --------------------------------------------------------------------------
     # Method: ImageData.get_image_geo_data
     # Desc: This method return object metadata value
